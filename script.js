@@ -25,7 +25,7 @@ const PROJECTS = [
     github:      'https://github.com/tigamb',
   },
   {
-    title:       'REST API Automation',
+    title:       'API Automation',
     video:       'https://drive.google.com/file/d/1jX3Oze8cm5Xy1SG5W5D2Jjq06yU_yeSK/preview',
     thumb:       'assets/images/thumb-api.jpg',
     tags:        ['Python', 'Requests', 'Pytest', 'Postman', 'JSON Schema'],
