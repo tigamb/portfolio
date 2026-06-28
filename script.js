@@ -10,7 +10,10 @@
 const PROJECTS = [
   {
     title:       'Playwright Automation Framework',
-    video:       'assets/videos/playwright.mp4',
+    // Replace with your YouTube URL, e.g. 'https://www.youtube.com/embed/VIDEO_ID'
+    // Or a Google Drive embed: 'https://drive.google.com/file/d/FILE_ID/preview'
+    video:       'https://www.youtube.com/embed/YOUR_VIDEO_ID_1',
+    thumb:       'assets/images/thumb-playwright.jpg',
     tags:        ['Python', 'Playwright', 'Pytest', 'Allure'],
     desc:        'A production-grade end-to-end automation framework built from scratch using Playwright and Python. Implements the Page Object Model pattern for maintainability, parallel execution across multiple browsers, and generates beautiful Allure HTML reports. Designed to integrate seamlessly into CI/CD pipelines with zero configuration.',
     challenge:   'The team had no standardized automation setup. Tests were slow, brittle, and not maintainable across a growing engineering team.',
@@ -25,7 +28,8 @@ const PROJECTS = [
   },
   {
     title:       'Mobile Automation Framework',
-    video:       'assets/videos/mobile.mp4',
+    video:       'https://www.youtube.com/embed/YOUR_VIDEO_ID_2',
+    thumb:       'assets/images/thumb-mobile.jpg',
     tags:        ['Appium', 'Python', 'Pytest', 'iOS', 'Android'],
     desc:        'Cross-platform mobile automation framework covering both iOS and Android. Built on Appium with a unified Page Object layer so the same test logic works across both platforms. Supports real devices, simulators, and cloud device farms.',
     challenge:   'Maintaining two separate automation codebases for iOS and Android was expensive and caused significant drift between platforms.',
@@ -40,7 +44,8 @@ const PROJECTS = [
   },
   {
     title:       'REST API Automation',
-    video:       'assets/videos/api.mp4',
+    video:       'https://www.youtube.com/embed/YOUR_VIDEO_ID_3',
+    thumb:       'assets/images/thumb-api.jpg',
     tags:        ['Python', 'Requests', 'Pytest', 'Postman', 'JSON Schema'],
     desc:        'Comprehensive API test suite covering authentication flows, CRUD operations, contract testing, error handling, and performance benchmarking. Schema validation on every response ensures backward compatibility is never silently broken.',
     challenge:   'API changes were regularly breaking downstream consumers with no automated safety net catching regressions before production.',
@@ -55,7 +60,8 @@ const PROJECTS = [
   },
   {
     title:       'AI Automation Tools',
-    video:       'assets/videos/ai.mp4',
+    video:       'https://www.youtube.com/embed/YOUR_VIDEO_ID_4',
+    thumb:       'assets/images/thumb-ai.jpg',
     tags:        ['Python', 'Claude API', 'ChatGPT', 'GitHub Copilot'],
     desc:        'A suite of intelligent automation utilities powered by LLMs. Includes a test-case generator that creates Playwright scripts from natural language user stories, a self-healing locator engine that automatically updates broken selectors, and a test-data factory that generates realistic data for any schema.',
     challenge:   'Maintaining thousands of test locators and writing test cases for new features was a bottleneck that slowed down the QA team.',
@@ -70,7 +76,8 @@ const PROJECTS = [
   },
   {
     title:       'Python Automation Scripts',
-    video:       'assets/videos/python.mp4',
+    video:       'https://www.youtube.com/embed/YOUR_VIDEO_ID_5',
+    thumb:       'assets/images/thumb-python.jpg',
     tags:        ['Python', 'Pandas', 'Boto3', 'SMTP', 'Slack API'],
     desc:        'A collection of business automation scripts handling data pipelines, automated report generation, file processing, cloud storage management, and Slack/email notification systems. Saved dozens of engineering and operations hours per week.',
     challenge:   'Repetitive manual tasks (weekly reports, file syncing, data exports) were consuming hours of team time and were error-prone.',
@@ -359,21 +366,7 @@ function animateCounter(el) {
   requestAnimationFrame(update);
 }
 
-/* ──────────────────────────────────────────
-   PROJECT CARD VIDEO HOVER
-   ────────────────────────────────────────── */
-document.querySelectorAll('.project-card').forEach(card => {
-  const video = card.querySelector('.project-video');
-  if (!video) return;
-
-  card.addEventListener('mouseenter', () => {
-    video.play().catch(() => {});
-  });
-  card.addEventListener('mouseleave', () => {
-    video.pause();
-    video.currentTime = 0;
-  });
-});
+/* Project cards now use thumbnail images — no hover video needed */
 
 /* ──────────────────────────────────────────
    PROJECT MODAL
@@ -382,11 +375,15 @@ const overlay    = document.getElementById('projectModal');
 const modalClose = document.getElementById('modalClose');
 const modalVideo = document.getElementById('modalVideo');
 
+function isExternalEmbed(url) {
+  return url && (url.includes('youtube.com/embed') || url.includes('drive.google.com'));
+}
+
 function openModal(idx) {
   const p = PROJECTS[idx];
   if (!p || !overlay) return;
 
-  // Populate fields
+  // Populate text fields
   document.getElementById('modalTitle').textContent = p.title;
   document.getElementById('modalDesc').textContent  = p.desc;
   document.getElementById('modalChallenge').textContent = p.challenge;
@@ -401,15 +398,34 @@ function openModal(idx) {
   const githubBtn = document.getElementById('modalGithub');
   if (githubBtn) githubBtn.href = p.github;
 
-  // Video
-  modalVideo.src = p.video;
-  modalVideo.load();
+  // Video: iframe for YouTube/Drive, <video> for local files
+  const videoWrapper = document.querySelector('.modal-video-wrapper');
+  const customControls = document.querySelector('.custom-controls');
+
+  // Remove any existing iframe
+  const existingIframe = videoWrapper.querySelector('iframe.modal-iframe');
+  if (existingIframe) existingIframe.remove();
+
+  if (isExternalEmbed(p.video)) {
+    modalVideo.style.display = 'none';
+    if (customControls) customControls.style.display = 'none';
+
+    const iframe = document.createElement('iframe');
+    iframe.className    = 'modal-iframe';
+    iframe.src          = p.video + '?autoplay=1&rel=0';
+    iframe.allow        = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    iframe.allowFullscreen = true;
+    videoWrapper.insertBefore(iframe, modalVideo);
+  } else {
+    modalVideo.style.display = '';
+    if (customControls) customControls.style.display = '';
+    modalVideo.src = p.video;
+    modalVideo.load();
+    initVideoControls(modalVideo);
+  }
 
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
-
-  // Init custom controls
-  initVideoControls(modalVideo);
 }
 
 function closeModal() {
@@ -419,6 +435,12 @@ function closeModal() {
     modalVideo.pause();
     modalVideo.src = '';
   }
+  // Remove iframe to stop YouTube playback
+  const iframe = document.querySelector('.modal-iframe');
+  if (iframe) iframe.remove();
+  const customControls = document.querySelector('.custom-controls');
+  if (customControls) customControls.style.display = '';
+  if (modalVideo) modalVideo.style.display = '';
 }
 
 // Trigger buttons

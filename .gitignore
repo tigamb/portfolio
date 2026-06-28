@@ -9,3 +9,8 @@ Thumbs.db
 # Temp
 *.tmp
 *.log
+
+# Large media files – host externally (YouTube / Drive)
+assets/videos/*.mp4
+assets/videos/*.mov
+assets/videos/*.avi
