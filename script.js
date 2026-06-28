@@ -10,9 +10,7 @@
 const PROJECTS = [
   {
     title:       'Playwright Automation Framework',
-    // Replace with your YouTube URL, e.g. 'https://www.youtube.com/embed/VIDEO_ID'
-    // Or a Google Drive embed: 'https://drive.google.com/file/d/FILE_ID/preview'
-    video:       'https://www.youtube.com/embed/YOUR_VIDEO_ID_1',
+    video:       'https://drive.google.com/file/d/1jX3Oze8cm5Xy1SG5W5D2Jjq06yU_yeSK/preview',
     thumb:       'assets/images/thumb-playwright.jpg',
     tags:        ['Python', 'Playwright', 'Pytest', 'Allure'],
     desc:        'A production-grade end-to-end automation framework built from scratch using Playwright and Python. Implements the Page Object Model pattern for maintainability, parallel execution across multiple browsers, and generates beautiful Allure HTML reports. Designed to integrate seamlessly into CI/CD pipelines with zero configuration.',
