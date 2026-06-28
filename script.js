@@ -26,7 +26,7 @@ const PROJECTS = [
   },
   {
     title:       'REST API Automation',
-    video:       null, // Replace with Google Drive link when ready
+    video:       'https://drive.google.com/file/d/1jX3Oze8cm5Xy1SG5W5D2Jjq06yU_yeSK/preview',
     thumb:       'assets/images/thumb-api.jpg',
     tags:        ['Python', 'Requests', 'Pytest', 'Postman', 'JSON Schema'],
     desc:        'Comprehensive API test suite covering authentication flows, CRUD operations, contract testing, error handling, and performance benchmarking. Schema validation on every response ensures backward compatibility is never silently broken.',
