@@ -25,22 +25,6 @@ const PROJECTS = [
     github:      'https://github.com/danny-ambaou/playwright-framework',
   },
   {
-    title:       'Mobile Automation Framework',
-    video:       null,
-    thumb:       'assets/images/thumb-mobile.jpg',
-    tags:        ['Appium', 'Python', 'Pytest', 'iOS', 'Android'],
-    desc:        'Cross-platform mobile automation framework covering both iOS and Android. Built on Appium with a unified Page Object layer so the same test logic works across both platforms. Supports real devices, simulators, and cloud device farms.',
-    challenge:   'Maintaining two separate automation codebases for iOS and Android was expensive and caused significant drift between platforms.',
-    solution:    'Abstracted platform-specific logic behind a common interface. Used Appium\'s cross-platform capabilities with conditional element strategies and a shared fixture layer that spawns the correct driver per platform automatically.',
-    achievements:[
-      'Single codebase covering 100% of iOS and Android test cases',
-      'Integrated with BrowserStack for real-device cloud execution',
-      'Reduced mobile regression cycle from 3 days to 4 hours',
-      'Custom screenshot-on-failure with automatic Jira ticket creation',
-    ],
-    github:      'https://github.com/danny-ambaou/mobile-framework',
-  },
-  {
     title:       'REST API Automation',
     video:       null, // Replace with Google Drive link when ready
     thumb:       'assets/images/thumb-api.jpg',
@@ -55,38 +39,6 @@ const PROJECTS = [
       'Data-driven: test matrix auto-generated from OpenAPI specification',
     ],
     github:      'https://github.com/danny-ambaou/api-automation',
-  },
-  {
-    title:       'AI Automation Tools',
-    video:       null,
-    thumb:       'assets/images/thumb-ai.jpg',
-    tags:        ['Python', 'Claude API', 'ChatGPT', 'GitHub Copilot'],
-    desc:        'A suite of intelligent automation utilities powered by LLMs. Includes a test-case generator that creates Playwright scripts from natural language user stories, a self-healing locator engine that automatically updates broken selectors, and a test-data factory that generates realistic data for any schema.',
-    challenge:   'Maintaining thousands of test locators and writing test cases for new features was a bottleneck that slowed down the QA team.',
-    solution:    'Integrated Claude API to parse requirement documents and generate draft Playwright test scripts. Built a self-healing engine using vision LLMs to re-identify elements after UI changes and update selectors automatically.',
-    achievements:[
-      'Test case generation time reduced from 2 days to 2 hours per feature',
-      'Self-healing locators reduced maintenance overhead by 70%',
-      'Realistic test data generation eliminated dependency on production data copies',
-      'Presented as an internal tech talk to 50+ engineers',
-    ],
-    github:      'https://github.com/danny-ambaou/ai-automation',
-  },
-  {
-    title:       'Python Automation Scripts',
-    video:       null,
-    thumb:       'assets/images/thumb-python.jpg',
-    tags:        ['Python', 'Pandas', 'Boto3', 'SMTP', 'Slack API'],
-    desc:        'A collection of business automation scripts handling data pipelines, automated report generation, file processing, cloud storage management, and Slack/email notification systems. Saved dozens of engineering and operations hours per week.',
-    challenge:   'Repetitive manual tasks (weekly reports, file syncing, data exports) were consuming hours of team time and were error-prone.',
-    solution:    'Automated each workflow with Python scripts scheduled via cron and Jenkins. Used Pandas for data transformation, Boto3 for AWS S3 operations, and the Slack/Gmail APIs for notifications.',
-    achievements:[
-      'Saved 20+ engineering hours per week across 8 automated workflows',
-      'Eliminated manual errors in weekly KPI reporting',
-      'AWS S3 sync scripts with automatic versioning and audit logs',
-      'Slack bot for on-call alert routing with escalation logic',
-    ],
-    github:      'https://github.com/danny-ambaou/python-scripts',
   },
 ];
 
