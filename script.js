@@ -609,7 +609,7 @@ function handleResumeClick(e) {
   // Replace the line below with: this.href = 'assets/Danny_Ambaou_CV.pdf';
   // once you add your CV file to the assets folder
   e.preventDefault();
-  alert('CV download coming soon.\nContact me directly: dannyamb55@gmail.com');
+  alert('CV download coming soon.\nContact me directly: danny.ambaou@gmail.com');
 }
 
 ['downloadResume', 'downloadResume2'].forEach(id => {
