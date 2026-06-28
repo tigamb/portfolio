@@ -10,7 +10,7 @@
 const PROJECTS = [
   {
     title:       'Playwright Automation Framework',
-    video:       'https://drive.google.com/file/d/1jX3Oze8cm5Xy1SG5W5D2Jjq06yU_yeSK/preview',
+    video:       'https://drive.google.com/file/d/1H_JLuguV9hzNtFdpbhH9qDoZvDzHMd0F/preview',
     thumb:       'assets/images/thumb-playwright.jpg',
     tags:        ['Python', 'Playwright', 'Pytest', 'Allure'],
     desc:        'A production-grade end-to-end automation framework built from scratch using Playwright and Python. Implements the Page Object Model pattern for maintainability, parallel execution across multiple browsers, and generates beautiful Allure HTML reports. Designed to integrate seamlessly into CI/CD pipelines with zero configuration.',
@@ -266,22 +266,6 @@ const revealObserver = new IntersectionObserver(
 
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-// Animate skill bars when they enter viewport
-const skillObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.querySelectorAll('.skill-fill').forEach(bar => {
-          bar.style.width = bar.dataset.width + '%';
-        });
-        skillObserver.unobserve(entry.target);
-      }
-    });
-  },
-  { threshold: 0.3 }
-);
-
-document.querySelectorAll('.skill-card').forEach(card => skillObserver.observe(card));
 
 /* ──────────────────────────────────────────
    ANIMATED COUNTERS

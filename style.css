@@ -437,6 +437,11 @@ ul { list-style: none; }
   letter-spacing: 0.5px;
 }
 
+.hero-title-sep {
+  color: var(--text-faint);
+  font-weight: 300;
+}
+
 .hero-subtitle {
   font-family: 'JetBrains Mono', monospace;
   font-size: clamp(0.85rem, 2vw, 1rem);
@@ -688,6 +693,37 @@ ul { list-style: none; }
   font-weight: 500;
 }
 
+.about-wins {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 20px;
+  border-radius: var(--radius);
+  background: rgba(99,102,241,0.06);
+  border: 1px solid rgba(99,102,241,0.15);
+}
+
+.about-win-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.about-win-icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+  margin-top: 1px;
+}
+
+.about-win-item strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .about-text {
   font-size: 1rem;
   color: var(--text-muted);
@@ -773,73 +809,53 @@ ul { list-style: none; }
 .skill-icon--orange { background: rgba(245,158,11,0.15); color: #f59e0b; }
 .skill-icon--green  { background: rgba(16,185,129,0.15); color: #10b981; }
 
-.skill-items { display: flex; flex-direction: column; gap: 14px; }
-
-.skill-item {
-  display: grid;
-  grid-template-columns: 110px 1fr 38px;
-  align-items: center;
-  gap: 12px;
-}
-
-.skill-name {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.skill-bar {
-  height: 6px;
-  background: var(--border);
-  border-radius: 99px;
-  overflow: hidden;
-}
-
-.skill-fill {
-  height: 100%;
-  width: 0;
-  background: var(--grad-a);
-  border-radius: 99px;
-  transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
-}
-
-.skill-pct {
-  font-size: 0.75rem;
-  color: var(--text-faint);
-  font-family: 'JetBrains Mono', monospace;
-  text-align: right;
-}
-
-.skill-items--row {
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.skill-pill {
+.skill-chips {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
-  padding: 8px 18px;
+}
+
+.schip {
+  padding: 6px 14px;
   border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 500;
   background: var(--surface);
   border: 1px solid var(--border);
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: border-color var(--transition);
+  color: var(--text-muted);
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+  white-space: nowrap;
 }
 
-.skill-pill:hover { border-color: var(--border-hover); }
-
-.skill-pill-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+.schip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(99,102,241,0.08);
 }
 
-.dot--claude   { background: #6366f1; box-shadow: 0 0 6px #6366f1; }
-.dot--gpt      { background: #10b981; box-shadow: 0 0 6px #10b981; }
-.dot--copilot  { background: #06b6d4; box-shadow: 0 0 6px #06b6d4; }
+.schip--primary {
+  background: rgba(99,102,241,0.12);
+  border-color: rgba(99,102,241,0.3);
+  color: #a5b4fc;
+}
+
+.schip--primary:hover {
+  background: rgba(99,102,241,0.2);
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.schip--ai {
+  background: rgba(16,185,129,0.08);
+  border-color: rgba(16,185,129,0.25);
+  color: #6ee7b7;
+}
+
+.schip--ai:hover {
+  background: rgba(16,185,129,0.15);
+  border-color: #10b981;
+  color: var(--text);
+}
 
 /* ============================================================
    PROJECTS SECTION
@@ -848,6 +864,8 @@ ul { list-style: none; }
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 24px;
+  max-width: 860px;
+  margin: 0 auto;
 }
 
 .project-card {
@@ -980,7 +998,22 @@ ul { list-style: none; }
   font-size: 0.875rem;
   color: var(--text-muted);
   line-height: 1.6;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
+}
+
+.project-result {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6ee7b7;
+  background: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: 6px;
+  padding: 5px 10px;
+  margin-bottom: 12px;
+  width: fit-content;
 }
 
 .project-tags {
