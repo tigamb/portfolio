@@ -22,7 +22,7 @@ const PROJECTS = [
       'Zero-configuration onboarding — new engineers run the full suite in under 5 minutes',
       'Allure reports auto-published to internal dashboard after each CI run',
     ],
-    github:      'https://github.com/danny-ambaou/playwright-framework',
+    github:      'https://github.com/tigamb',
   },
   {
     title:       'REST API Automation',
@@ -38,7 +38,7 @@ const PROJECTS = [
       'Performance baseline monitoring with automatic Slack alerts on degradation',
       'Data-driven: test matrix auto-generated from OpenAPI specification',
     ],
-    github:      'https://github.com/danny-ambaou/api-automation',
+    github:      'https://github.com/tigamb',
   },
 ];
 
@@ -605,13 +605,14 @@ updateBackToTop();
 /* ──────────────────────────────────────────
    DOWNLOAD RESUME PLACEHOLDER
    ────────────────────────────────────────── */
-const downloadBtn = document.getElementById('downloadResume');
-if (downloadBtn) {
-  downloadBtn.addEventListener('click', (e) => {
-    // Replace href with actual resume file path when ready
-    // e.g. downloadBtn.href = 'assets/Danny_Ambaou_Resume.pdf';
-    // For now just show alert
-    e.preventDefault();
-    alert('Resume download will be available soon.\nPlease contact me directly at dannyamb55@gmail.com');
-  });
+function handleResumeClick(e) {
+  // Replace the line below with: this.href = 'assets/Danny_Ambaou_CV.pdf';
+  // once you add your CV file to the assets folder
+  e.preventDefault();
+  alert('CV download coming soon.\nContact me directly: dannyamb55@gmail.com');
 }
+
+['downloadResume', 'downloadResume2'].forEach(id => {
+  const btn = document.getElementById(id);
+  if (btn) btn.addEventListener('click', handleResumeClick);
+});
