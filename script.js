@@ -1,0 +1,637 @@
+/* ============================================================
+   DANNY AMBAOU – PORTFOLIO  |  script.js
+   ============================================================ */
+
+'use strict';
+
+/* ──────────────────────────────────────────
+   PROJECT DATA
+   ────────────────────────────────────────── */
+const PROJECTS = [
+  {
+    title:       'Playwright Automation Framework',
+    video:       'assets/videos/playwright.mp4',
+    tags:        ['Python', 'Playwright', 'Pytest', 'Allure'],
+    desc:        'A production-grade end-to-end automation framework built from scratch using Playwright and Python. Implements the Page Object Model pattern for maintainability, parallel execution across multiple browsers, and generates beautiful Allure HTML reports. Designed to integrate seamlessly into CI/CD pipelines with zero configuration.',
+    challenge:   'The team had no standardized automation setup. Tests were slow, brittle, and not maintainable across a growing engineering team.',
+    solution:    'Designed a layered POM architecture with shared fixtures, environment-agnostic configuration management, custom retry logic for flaky selectors, and a Jenkins pipeline that runs tests in parallel across Chromium, Firefox, and WebKit.',
+    achievements:[
+      'Reduced test suite execution time by 60% through parallelisation',
+      'Achieved 95%+ coverage on critical user journeys',
+      'Zero-configuration onboarding — new engineers run the full suite in under 5 minutes',
+      'Allure reports auto-published to internal dashboard after each CI run',
+    ],
+    github:      'https://github.com/danny-ambaou/playwright-framework',
+  },
+  {
+    title:       'Mobile Automation Framework',
+    video:       'assets/videos/mobile.mp4',
+    tags:        ['Appium', 'Python', 'Pytest', 'iOS', 'Android'],
+    desc:        'Cross-platform mobile automation framework covering both iOS and Android. Built on Appium with a unified Page Object layer so the same test logic works across both platforms. Supports real devices, simulators, and cloud device farms.',
+    challenge:   'Maintaining two separate automation codebases for iOS and Android was expensive and caused significant drift between platforms.',
+    solution:    'Abstracted platform-specific logic behind a common interface. Used Appium\'s cross-platform capabilities with conditional element strategies and a shared fixture layer that spawns the correct driver per platform automatically.',
+    achievements:[
+      'Single codebase covering 100% of iOS and Android test cases',
+      'Integrated with BrowserStack for real-device cloud execution',
+      'Reduced mobile regression cycle from 3 days to 4 hours',
+      'Custom screenshot-on-failure with automatic Jira ticket creation',
+    ],
+    github:      'https://github.com/danny-ambaou/mobile-framework',
+  },
+  {
+    title:       'REST API Automation',
+    video:       'assets/videos/api.mp4',
+    tags:        ['Python', 'Requests', 'Pytest', 'Postman', 'JSON Schema'],
+    desc:        'Comprehensive API test suite covering authentication flows, CRUD operations, contract testing, error handling, and performance benchmarking. Schema validation on every response ensures backward compatibility is never silently broken.',
+    challenge:   'API changes were regularly breaking downstream consumers with no automated safety net catching regressions before production.',
+    solution:    'Built a layered API client abstraction with automatic JWT token refresh, JSON Schema contract validation on every response, data-driven test generation from OpenAPI specs, and performance thresholds that fail the build if p95 latency degrades.',
+    achievements:[
+      'Caught 12 breaking API changes before reaching production in first 3 months',
+      'Contract tests run in under 90 seconds across 200+ endpoints',
+      'Performance baseline monitoring with automatic Slack alerts on degradation',
+      'Data-driven: test matrix auto-generated from OpenAPI specification',
+    ],
+    github:      'https://github.com/danny-ambaou/api-automation',
+  },
+  {
+    title:       'AI Automation Tools',
+    video:       'assets/videos/ai.mp4',
+    tags:        ['Python', 'Claude API', 'ChatGPT', 'GitHub Copilot'],
+    desc:        'A suite of intelligent automation utilities powered by LLMs. Includes a test-case generator that creates Playwright scripts from natural language user stories, a self-healing locator engine that automatically updates broken selectors, and a test-data factory that generates realistic data for any schema.',
+    challenge:   'Maintaining thousands of test locators and writing test cases for new features was a bottleneck that slowed down the QA team.',
+    solution:    'Integrated Claude API to parse requirement documents and generate draft Playwright test scripts. Built a self-healing engine using vision LLMs to re-identify elements after UI changes and update selectors automatically.',
+    achievements:[
+      'Test case generation time reduced from 2 days to 2 hours per feature',
+      'Self-healing locators reduced maintenance overhead by 70%',
+      'Realistic test data generation eliminated dependency on production data copies',
+      'Presented as an internal tech talk to 50+ engineers',
+    ],
+    github:      'https://github.com/danny-ambaou/ai-automation',
+  },
+  {
+    title:       'Python Automation Scripts',
+    video:       'assets/videos/python.mp4',
+    tags:        ['Python', 'Pandas', 'Boto3', 'SMTP', 'Slack API'],
+    desc:        'A collection of business automation scripts handling data pipelines, automated report generation, file processing, cloud storage management, and Slack/email notification systems. Saved dozens of engineering and operations hours per week.',
+    challenge:   'Repetitive manual tasks (weekly reports, file syncing, data exports) were consuming hours of team time and were error-prone.',
+    solution:    'Automated each workflow with Python scripts scheduled via cron and Jenkins. Used Pandas for data transformation, Boto3 for AWS S3 operations, and the Slack/Gmail APIs for notifications.',
+    achievements:[
+      'Saved 20+ engineering hours per week across 8 automated workflows',
+      'Eliminated manual errors in weekly KPI reporting',
+      'AWS S3 sync scripts with automatic versioning and audit logs',
+      'Slack bot for on-call alert routing with escalation logic',
+    ],
+    github:      'https://github.com/danny-ambaou/python-scripts',
+  },
+];
+
+/* ──────────────────────────────────────────
+   LOADING SCREEN
+   ────────────────────────────────────────── */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('loader');
+    if (loader) {
+      loader.classList.add('hidden');
+      // Trigger hero animations
+      document.querySelectorAll('.hero-content .fade-up').forEach(el => {
+        el.classList.add('visible');
+      });
+    }
+  }, 1900);
+});
+
+/* ──────────────────────────────────────────
+   SCROLL PROGRESS BAR
+   ────────────────────────────────────────── */
+function updateScrollProgress() {
+  const scrollTop    = window.scrollY;
+  const docHeight    = document.documentElement.scrollHeight - window.innerHeight;
+  const progress     = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  const bar = document.getElementById('scroll-progress');
+  if (bar) bar.style.width = progress + '%';
+}
+
+/* ──────────────────────────────────────────
+   NAVBAR – SCROLL BEHAVIOUR
+   ────────────────────────────────────────── */
+let lastScroll = 0;
+
+function handleNavbar() {
+  const navbar    = document.getElementById('navbar');
+  const scrollTop = window.scrollY;
+
+  if (!navbar) return;
+
+  if (scrollTop > 60) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+  lastScroll = scrollTop;
+}
+
+/* ──────────────────────────────────────────
+   ACTIVE NAV LINK ON SCROLL
+   ────────────────────────────────────────── */
+function updateActiveNav() {
+  const sections = document.querySelectorAll('section[id]');
+  const links    = document.querySelectorAll('.nav-link');
+  let current    = '';
+
+  sections.forEach(section => {
+    if (window.scrollY >= section.offsetTop - 120) {
+      current = section.id;
+    }
+  });
+
+  links.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+}
+
+/* ──────────────────────────────────────────
+   MOBILE HAMBURGER
+   ────────────────────────────────────────── */
+const hamburger  = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+
+if (hamburger && mobileMenu) {
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+
+  // Close on link click
+  mobileMenu.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    });
+  });
+}
+
+/* ──────────────────────────────────────────
+   PARTICLE CANVAS
+   ────────────────────────────────────────── */
+(function initParticles() {
+  const canvas = document.getElementById('particleCanvas');
+  if (!canvas) return;
+  const ctx    = canvas.getContext('2d');
+
+  let particles = [];
+  const COUNT   = 80;
+
+  function resize() {
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+
+  function createParticle() {
+    return {
+      x:     Math.random() * canvas.width,
+      y:     Math.random() * canvas.height,
+      r:     Math.random() * 1.5 + 0.3,
+      vx:    (Math.random() - 0.5) * 0.3,
+      vy:    (Math.random() - 0.5) * 0.3,
+      alpha: Math.random() * 0.5 + 0.1,
+    };
+  }
+
+  function init() {
+    resize();
+    particles = Array.from({ length: COUNT }, createParticle);
+  }
+
+  function drawConnections() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx   = particles[i].x - particles[j].x;
+        const dy   = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(99,102,241,${0.08 * (1 - dist / 120)})`;
+          ctx.lineWidth   = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawConnections();
+
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height;
+      if (p.y > canvas.height) p.y = 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(99,102,241,${p.alpha})`;
+      ctx.fill();
+    });
+
+    requestAnimationFrame(animate);
+  }
+
+  init();
+  animate();
+  window.addEventListener('resize', init);
+})();
+
+/* ──────────────────────────────────────────
+   TYPING ANIMATION
+   ────────────────────────────────────────── */
+(function initTyping() {
+  const el = document.getElementById('typing-text');
+  if (!el) return;
+
+  const phrases = [
+    'Python | Playwright | Selenium',
+    'Appium | Mobile Automation',
+    'REST API | Pytest | Jenkins',
+    'AI-Powered Test Automation',
+  ];
+
+  let phraseIdx  = 0;
+  let charIdx    = 0;
+  let deleting   = false;
+  let pause      = false;
+
+  function type() {
+    const current = phrases[phraseIdx];
+
+    if (!deleting && charIdx <= current.length) {
+      el.textContent = current.substring(0, charIdx++);
+      setTimeout(type, 70);
+    } else if (!deleting && charIdx > current.length) {
+      pause = true;
+      setTimeout(() => { deleting = true; pause = false; type(); }, 2000);
+    } else if (deleting && charIdx >= 0) {
+      el.textContent = current.substring(0, charIdx--);
+      setTimeout(type, 35);
+    } else {
+      deleting   = false;
+      phraseIdx  = (phraseIdx + 1) % phrases.length;
+      charIdx    = 0;
+      setTimeout(type, 400);
+    }
+  }
+
+  setTimeout(type, 2000); // Wait for loader
+})();
+
+/* ──────────────────────────────────────────
+   INTERSECTION OBSERVER – REVEAL & SKILLS
+   ────────────────────────────────────────── */
+const revealObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+);
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// Animate skill bars when they enter viewport
+const skillObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.skill-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width + '%';
+        });
+        skillObserver.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.3 }
+);
+
+document.querySelectorAll('.skill-card').forEach(card => skillObserver.observe(card));
+
+/* ──────────────────────────────────────────
+   ANIMATED COUNTERS
+   ────────────────────────────────────────── */
+const counterObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        counterObserver.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.5 }
+);
+
+document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+
+function animateCounter(el) {
+  const target   = parseInt(el.dataset.target, 10);
+  const duration = 1800;
+  const start    = performance.now();
+
+  function update(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased    = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.floor(eased * target);
+    if (progress < 1) requestAnimationFrame(update);
+    else el.textContent = target;
+  }
+
+  requestAnimationFrame(update);
+}
+
+/* ──────────────────────────────────────────
+   PROJECT CARD VIDEO HOVER
+   ────────────────────────────────────────── */
+document.querySelectorAll('.project-card').forEach(card => {
+  const video = card.querySelector('.project-video');
+  if (!video) return;
+
+  card.addEventListener('mouseenter', () => {
+    video.play().catch(() => {});
+  });
+  card.addEventListener('mouseleave', () => {
+    video.pause();
+    video.currentTime = 0;
+  });
+});
+
+/* ──────────────────────────────────────────
+   PROJECT MODAL
+   ────────────────────────────────────────── */
+const overlay    = document.getElementById('projectModal');
+const modalClose = document.getElementById('modalClose');
+const modalVideo = document.getElementById('modalVideo');
+
+function openModal(idx) {
+  const p = PROJECTS[idx];
+  if (!p || !overlay) return;
+
+  // Populate fields
+  document.getElementById('modalTitle').textContent = p.title;
+  document.getElementById('modalDesc').textContent  = p.desc;
+  document.getElementById('modalChallenge').textContent = p.challenge;
+  document.getElementById('modalSolution').textContent  = p.solution;
+
+  const achList = document.getElementById('modalAchievements');
+  achList.innerHTML = p.achievements.map(a => `<li>${a}</li>`).join('');
+
+  const tagsEl = document.getElementById('modalTags');
+  tagsEl.innerHTML = p.tags.map(t => `<span class="ptag">${t}</span>`).join('');
+
+  const githubBtn = document.getElementById('modalGithub');
+  if (githubBtn) githubBtn.href = p.github;
+
+  // Video
+  modalVideo.src = p.video;
+  modalVideo.load();
+
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Init custom controls
+  initVideoControls(modalVideo);
+}
+
+function closeModal() {
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  if (modalVideo) {
+    modalVideo.pause();
+    modalVideo.src = '';
+  }
+}
+
+// Trigger buttons
+document.querySelectorAll('.modal-trigger').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openModal(parseInt(btn.dataset.project, 10));
+  });
+});
+
+// Close
+if (modalClose) modalClose.addEventListener('click', closeModal);
+if (overlay) {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+/* ──────────────────────────────────────────
+   CUSTOM VIDEO PLAYER CONTROLS
+   ────────────────────────────────────────── */
+function initVideoControls(video) {
+  const playBtn     = document.getElementById('playPauseBtn');
+  const playIcon    = document.getElementById('playIcon');
+  const pauseIcon   = document.getElementById('pauseIcon');
+  const progressWrap= document.getElementById('progressWrapper');
+  const progressFill= document.getElementById('progressFill');
+  const progressThumb= document.getElementById('progressThumb');
+  const timeDisplay = document.getElementById('timeDisplay');
+  const muteBtn     = document.getElementById('muteBtn');
+  const fullBtn     = document.getElementById('fullscreenBtn');
+
+  if (!video || !playBtn) return;
+
+  function formatTime(s) {
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${sec.toString().padStart(2, '0')}`;
+  }
+
+  function updateUI() {
+    if (video.paused) {
+      playIcon.style.display  = '';
+      pauseIcon.style.display = 'none';
+    } else {
+      playIcon.style.display  = 'none';
+      pauseIcon.style.display = '';
+    }
+    const pct = video.duration ? (video.currentTime / video.duration) * 100 : 0;
+    progressFill.style.width  = pct + '%';
+    progressThumb.style.left  = pct + '%';
+    timeDisplay.textContent   =
+      formatTime(video.currentTime) + ' / ' + formatTime(video.duration || 0);
+  }
+
+  playBtn.onclick = () => video.paused ? video.play() : video.pause();
+  video.addEventListener('play',       updateUI);
+  video.addEventListener('pause',      updateUI);
+  video.addEventListener('timeupdate', updateUI);
+  video.addEventListener('loadedmetadata', updateUI);
+
+  // Progress bar scrubbing
+  function scrub(e) {
+    const rect = progressWrap.querySelector('.ctrl-bar').getBoundingClientRect();
+    const x    = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+    const pct  = x / rect.width;
+    video.currentTime = pct * (video.duration || 0);
+  }
+
+  let scrubbing = false;
+  progressWrap.addEventListener('mousedown', (e) => { scrubbing = true; scrub(e); });
+  document.addEventListener('mousemove',    (e) => { if (scrubbing) scrub(e); });
+  document.addEventListener('mouseup',      ()  => { scrubbing = false; });
+
+  // Mute
+  if (muteBtn) {
+    muteBtn.onclick = () => { video.muted = !video.muted; };
+  }
+
+  // Fullscreen
+  if (fullBtn) {
+    fullBtn.onclick = () => {
+      const wrapper = video.closest('.modal-video-wrapper');
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        (wrapper || video).requestFullscreen().catch(() => {});
+      }
+    };
+  }
+}
+
+/* ──────────────────────────────────────────
+   CONTACT FORM
+   ────────────────────────────────────────── */
+const form = document.getElementById('contactForm');
+if (form) {
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const name    = form.querySelector('#name');
+    const email   = form.querySelector('#email');
+    const message = form.querySelector('#message');
+    const status  = document.getElementById('formStatus');
+    let valid     = true;
+
+    // Reset errors
+    document.querySelectorAll('.form-error').forEach(el => el.textContent = '');
+
+    if (!name.value.trim()) {
+      document.getElementById('nameError').textContent = 'Name is required.';
+      valid = false;
+    }
+    if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+      document.getElementById('emailError').textContent = 'Valid email is required.';
+      valid = false;
+    }
+    if (!message.value.trim()) {
+      document.getElementById('messageError').textContent = 'Message is required.';
+      valid = false;
+    }
+
+    if (!valid) return;
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled    = true;
+    btn.textContent = 'Sending...';
+
+    // Simulated send (replace with real backend/EmailJS/Formspree)
+    setTimeout(() => {
+      btn.disabled    = false;
+      btn.innerHTML   = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Message Sent!`;
+      status.textContent = 'Thank you! I\'ll get back to you soon.';
+      status.className   = 'form-note success';
+      form.reset();
+      setTimeout(() => {
+        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send Message`;
+        status.textContent = '';
+        status.className   = 'form-note';
+      }, 4000);
+    }, 1200);
+  });
+}
+
+/* ──────────────────────────────────────────
+   BACK TO TOP
+   ────────────────────────────────────────── */
+const backToTop = document.getElementById('backToTop');
+if (backToTop) {
+  backToTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+function updateBackToTop() {
+  if (!backToTop) return;
+  if (window.scrollY > 400) {
+    backToTop.classList.add('visible');
+  } else {
+    backToTop.classList.remove('visible');
+  }
+}
+
+/* ──────────────────────────────────────────
+   FOOTER YEAR
+   ────────────────────────────────────────── */
+const yearEl = document.getElementById('year');
+if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+/* ──────────────────────────────────────────
+   SMOOTH SCROLL FOR ANCHOR LINKS
+   ────────────────────────────────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', (e) => {
+    const target = document.querySelector(anchor.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      const offset = document.getElementById('navbar').offsetHeight + 8;
+      const top    = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+
+/* ──────────────────────────────────────────
+   SCROLL EVENT (consolidated)
+   ────────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  updateScrollProgress();
+  handleNavbar();
+  updateActiveNav();
+  updateBackToTop();
+}, { passive: true });
+
+// Initial calls
+updateScrollProgress();
+handleNavbar();
+updateActiveNav();
+updateBackToTop();
+
+/* ──────────────────────────────────────────
+   DOWNLOAD RESUME PLACEHOLDER
+   ────────────────────────────────────────── */
+const downloadBtn = document.getElementById('downloadResume');
+if (downloadBtn) {
+  downloadBtn.addEventListener('click', (e) => {
+    // Replace href with actual resume file path when ready
+    // e.g. downloadBtn.href = 'assets/Danny_Ambaou_Resume.pdf';
+    // For now just show alert
+    e.preventDefault();
+    alert('Resume download will be available soon.\nPlease contact me directly at dannyamb55@gmail.com');
+  });
+}
