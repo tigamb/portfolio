@@ -26,7 +26,7 @@ const PROJECTS = [
   },
   {
     title:       'Mobile Automation Framework',
-    video:       'https://www.youtube.com/embed/YOUR_VIDEO_ID_2',
+    video:       null,
     thumb:       'assets/images/thumb-mobile.jpg',
     tags:        ['Appium', 'Python', 'Pytest', 'iOS', 'Android'],
     desc:        'Cross-platform mobile automation framework covering both iOS and Android. Built on Appium with a unified Page Object layer so the same test logic works across both platforms. Supports real devices, simulators, and cloud device farms.',
@@ -42,7 +42,7 @@ const PROJECTS = [
   },
   {
     title:       'REST API Automation',
-    video:       'https://www.youtube.com/embed/YOUR_VIDEO_ID_3',
+    video:       null, // Replace with Google Drive link when ready
     thumb:       'assets/images/thumb-api.jpg',
     tags:        ['Python', 'Requests', 'Pytest', 'Postman', 'JSON Schema'],
     desc:        'Comprehensive API test suite covering authentication flows, CRUD operations, contract testing, error handling, and performance benchmarking. Schema validation on every response ensures backward compatibility is never silently broken.',
@@ -58,7 +58,7 @@ const PROJECTS = [
   },
   {
     title:       'AI Automation Tools',
-    video:       'https://www.youtube.com/embed/YOUR_VIDEO_ID_4',
+    video:       null,
     thumb:       'assets/images/thumb-ai.jpg',
     tags:        ['Python', 'Claude API', 'ChatGPT', 'GitHub Copilot'],
     desc:        'A suite of intelligent automation utilities powered by LLMs. Includes a test-case generator that creates Playwright scripts from natural language user stories, a self-healing locator engine that automatically updates broken selectors, and a test-data factory that generates realistic data for any schema.',
@@ -74,7 +74,7 @@ const PROJECTS = [
   },
   {
     title:       'Python Automation Scripts',
-    video:       'https://www.youtube.com/embed/YOUR_VIDEO_ID_5',
+    video:       null,
     thumb:       'assets/images/thumb-python.jpg',
     tags:        ['Python', 'Pandas', 'Boto3', 'SMTP', 'Slack API'],
     desc:        'A collection of business automation scripts handling data pipelines, automated report generation, file processing, cloud storage management, and Slack/email notification systems. Saved dozens of engineering and operations hours per week.',
@@ -396,7 +396,7 @@ function openModal(idx) {
   const githubBtn = document.getElementById('modalGithub');
   if (githubBtn) githubBtn.href = p.github;
 
-  // Video: iframe for YouTube/Drive, <video> for local files
+  // Video section
   const videoWrapper = document.querySelector('.modal-video-wrapper');
   const customControls = document.querySelector('.custom-controls');
 
@@ -404,17 +404,23 @@ function openModal(idx) {
   const existingIframe = videoWrapper.querySelector('iframe.modal-iframe');
   if (existingIframe) existingIframe.remove();
 
-  if (isExternalEmbed(p.video)) {
+  if (!p.video) {
+    // No video — hide the entire video wrapper
+    videoWrapper.style.display = 'none';
+    if (customControls) customControls.style.display = 'none';
+  } else if (isExternalEmbed(p.video)) {
+    videoWrapper.style.display = '';
     modalVideo.style.display = 'none';
     if (customControls) customControls.style.display = 'none';
 
     const iframe = document.createElement('iframe');
-    iframe.className    = 'modal-iframe';
-    iframe.src          = p.video + '?autoplay=1&rel=0';
-    iframe.allow        = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    iframe.className       = 'modal-iframe';
+    iframe.src             = p.video;
+    iframe.allow           = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
     iframe.allowFullscreen = true;
     videoWrapper.insertBefore(iframe, modalVideo);
   } else {
+    videoWrapper.style.display = '';
     modalVideo.style.display = '';
     if (customControls) customControls.style.display = '';
     modalVideo.src = p.video;
@@ -433,9 +439,11 @@ function closeModal() {
     modalVideo.pause();
     modalVideo.src = '';
   }
-  // Remove iframe to stop YouTube playback
+  // Remove iframe to stop external video playback
   const iframe = document.querySelector('.modal-iframe');
   if (iframe) iframe.remove();
+  const videoWrapper = document.querySelector('.modal-video-wrapper');
+  if (videoWrapper) videoWrapper.style.display = '';
   const customControls = document.querySelector('.custom-controls');
   if (customControls) customControls.style.display = '';
   if (modalVideo) modalVideo.style.display = '';
