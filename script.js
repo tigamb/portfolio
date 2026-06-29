@@ -590,10 +590,11 @@ updateBackToTop();
    DOWNLOAD RESUME PLACEHOLDER
    ────────────────────────────────────────── */
 function handleResumeClick(e) {
-  // Replace the line below with: this.href = 'assets/Danny_Ambaou_CV.pdf';
-  // once you add your CV file to the assets folder
   e.preventDefault();
-  alert('CV download coming soon.\nContact me directly: danny.ambaou@gmail.com');
+  const link = document.createElement('a');
+  link.href = 'assets/Danny_Ambaou_CV.pdf';
+  link.download = 'Danny_Ambaou_CV.pdf';
+  link.click();
 }
 
 ['downloadResume', 'downloadResume2'].forEach(id => {
